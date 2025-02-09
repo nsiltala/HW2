@@ -17,6 +17,12 @@ public class CameraPositioning : MonoBehaviour
         lensCamera.fieldOfView = Mathf.Clamp(distance, 10, 180);
 
         // Point lens camera in the same direction as the main camera
-        lensCamera.transform.rotation = Quaternion.LookRotation(newPos.normalized);
+        Quaternion targetRotation = Quaternion.LookRotation(newPos.normalized);
+        float zAngle = mainCamera.transform.eulerAngles.z;
+        zAngle += lensCamera.transform.parent.eulerAngles.z;
+        if (isReverse) {
+            zAngle += 180;
+        }
+        lensCamera.transform.rotation = Quaternion.Euler(targetRotation.eulerAngles.x, targetRotation.eulerAngles.y, zAngle);
     }
 }
