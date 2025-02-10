@@ -1,0 +1,46 @@
+{
+    "name": "DoubleRot",
+    "maps": [
+        {
+            "name": "New action map",
+            "id": "31201e29-5507-4dac-b321-f7aacf011ab3",
+            "actions": [
+                {
+                    "name": "DoubleRotSwitch",
+                    "type": "Button",
+                    "id": "b53c3351-ff92-439b-83de-2927e5ad8a2b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "aacd8f2d-2a9e-4a18-a47f-5ff3e22cd5ec",
+                    "path": "<XRController>{RightHand}/{PrimaryButton}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DoubleRotSwitch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "New Control Scheme",
+            "bindingGroup": "New Control Scheme",
+            "devices": [
+                {
+                    "devicePath": "<XRController>{RightHand}/{PrimaryButton}",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}

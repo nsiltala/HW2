@@ -1,133 +1,103 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class CustomGrab : MonoBehaviour
 {
-    private CustomGrab otherHand = null;
-    private List<Transform> nearObjects = new List<Transform>();
-    private Transform grabbedObject = null;
-    private bool isPrimaryGrabber = false;
-    public InputActionProperty grabAction;
-    private bool grabbing = false;
-    private Vector3 initialOffset;
-    private Quaternion initialRotationOffset;
-    private Rigidbody grabbedRigidbody;
+    CustomGrab otherHand = null;
+    public List<Transform> nearObjects = new List<Transform>();
+    public Transform grabbedObject = null;
+    public InputActionReference grabAction;
+    public InputActionReference toggleDoubleRotationAction;
+    bool grabbing = false;
+    bool doubleRotationEnabled = false;
+
+    private Vector3 lastPosition;
+    private Quaternion lastRotation;
 
     private void Start()
     {
-        if (grabAction.action != null)
-        {
-            grabAction.action.Enable();
-        }
-        else
-        {
-            Debug.LogWarning("Grab action is not assigned or is null.");
-        }
+        grabAction.action.Enable();
+        toggleDoubleRotationAction.action.Enable();
 
-        // Find the other hand
         foreach (CustomGrab c in transform.parent.GetComponentsInChildren<CustomGrab>())
         {
             if (c != this)
-            {
                 otherHand = c;
-            }
         }
+
+        lastPosition = transform.position;
+        lastRotation = transform.rotation;
+
+        toggleDoubleRotationAction.action.performed += OnToggleDoubleRotation;
+    }
+
+    private void OnDestroy()
+    {
+        toggleDoubleRotationAction.action.performed -= OnToggleDoubleRotation;
     }
 
     void Update()
     {
-        if (grabAction.action != null && grabAction.action.enabled)
-        {
-            grabbing = grabAction.action.ReadValue<float>() > 0.5f;
-        }
-
+        grabbing = grabAction.action.IsPressed();
         if (grabbing)
         {
             if (!grabbedObject)
-            {
-                // Grab the closest object
-                if (nearObjects.Count > 0)
-                {
-                    grabbedObject = nearObjects[0];
-                    grabbedRigidbody = grabbedObject.GetComponent<Rigidbody>();
-
-                    if (grabbedRigidbody)
-                    {
-                        grabbedRigidbody.isKinematic = true;
-                    }
-
-                    initialOffset = grabbedObject.position - transform.position;
-                    initialRotationOffset = Quaternion.Inverse(transform.rotation) * grabbedObject.rotation;
-                    isPrimaryGrabber = true;
-                }
-                else if (otherHand?.grabbedObject)
-                {
-                    grabbedObject = otherHand.grabbedObject;
-                    grabbedRigidbody = grabbedObject.GetComponent<Rigidbody>();
-                    isPrimaryGrabber = false; // This hand is assisting
-                }
-            }
+                grabbedObject = nearObjects.Count > 0 ? nearObjects[0] : otherHand.grabbedObject;
 
             if (grabbedObject)
             {
-                Vector3 targetPosition;
-                Quaternion targetRotation;
+                Vector3 deltaPosition = transform.position - lastPosition;
+                Quaternion deltaRotation = transform.rotation * Quaternion.Inverse(lastRotation);
 
-                if (otherHand?.grabbing == true)
+                if (otherHand && otherHand.grabbedObject == grabbedObject)
                 {
-                    // Combine positions and rotations of both hands
-                    Vector3 combinedPosition = (transform.position + otherHand.transform.position) / 2;
-                    Quaternion combinedRotation = Quaternion.Lerp(transform.rotation, otherHand.transform.rotation, 0.5f);
+                    Vector3 otherDeltaPosition = otherHand.transform.position - otherHand.lastPosition;
+                    Quaternion otherDeltaRotation = otherHand.transform.rotation * Quaternion.Inverse(otherHand.lastRotation);
 
-                    targetPosition = combinedPosition + initialOffset;
-                    targetRotation = combinedRotation * initialRotationOffset;
+                    deltaPosition += otherDeltaPosition;
+                    deltaRotation *= otherDeltaRotation;
+                }
+
+                grabbedObject.position += deltaPosition;
+
+                if (doubleRotationEnabled)
+                {
+                    grabbedObject.rotation = Quaternion.SlerpUnclamped(Quaternion.identity, deltaRotation, 2.0f) * grabbedObject.rotation;
                 }
                 else
                 {
-                    // Single hand manipulation
-                    targetPosition = transform.position + initialOffset;
-                    targetRotation = transform.rotation * initialRotationOffset;
-                }
-
-                if (grabbedRigidbody)
-                {
-                    grabbedRigidbody.MovePosition(targetPosition);
-                    grabbedRigidbody.MoveRotation(targetRotation);
-                }
-                else
-                {
-                    grabbedObject.position = targetPosition;
-                    grabbedObject.rotation = targetRotation;
+                    grabbedObject.rotation = deltaRotation * grabbedObject.rotation;
                 }
             }
         }
-        else if (grabbedObject && (isPrimaryGrabber || !otherHand.grabbing))
+        else if (grabbedObject)
         {
-            // Release the object
-            if (grabbedRigidbody)
-            {
-                grabbedRigidbody.isKinematic = false;
-            }
-
             grabbedObject = null;
-            grabbedRigidbody = null;
         }
+
+        lastPosition = transform.position;
+        lastRotation = transform.rotation;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("grabbable"))
-        {
-            nearObjects.Add(other.transform);
-        }
+        Transform t = other.transform;
+        if (t && t.tag.ToLower() == "grabbable")
+            nearObjects.Add(t);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("grabbable"))
-        {
-            nearObjects.Remove(other.transform);
-        }
+        Transform t = other.transform;
+        if (t && t.tag.ToLower() == "grabbable")
+            nearObjects.Remove(t);
+    }
+
+    private void OnToggleDoubleRotation(InputAction.CallbackContext context)
+    {
+        doubleRotationEnabled = !doubleRotationEnabled;
+        Debug.Log("Double Rotation Enabled: " + doubleRotationEnabled);
     }
 }

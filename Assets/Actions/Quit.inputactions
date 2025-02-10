@@ -1,0 +1,46 @@
+{
+    "name": "Quit",
+    "maps": [
+        {
+            "name": "New action map",
+            "id": "91d5df21-0929-4f13-8cae-a2d87cf2dca1",
+            "actions": [
+                {
+                    "name": "Quit",
+                    "type": "Button",
+                    "id": "e32bc5d1-6e04-4f41-968b-0d0d3301b7a1",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "4be2e9c7-8c6f-4c83-bb0e-10e384749964",
+                    "path": "<XRController>{RightHand}/{SecondaryButton}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Quit",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "New Control Scheme",
+            "bindingGroup": "New Control Scheme",
+            "devices": [
+                {
+                    "devicePath": "<XRController>{RightHand}/{SecondaryButton}",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}

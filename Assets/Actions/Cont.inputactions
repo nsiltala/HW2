@@ -1,0 +1,46 @@
+{
+    "name": "Cont",
+    "maps": [
+        {
+            "name": "New action map",
+            "id": "bf614197-2f86-4521-a6ce-8972a0471770",
+            "actions": [
+                {
+                    "name": "GrabRight",
+                    "type": "Button",
+                    "id": "99709bd5-b975-45f9-8ae2-8c143d861617",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "9f84a01a-435e-4773-8608-4132ab122932",
+                    "path": "<XRController>{RightHand}/{TriggerButton}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GrabRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "New Control Scheme",
+            "bindingGroup": "New Control Scheme",
+            "devices": [
+                {
+                    "devicePath": "<XRController>{RightHand}/{Trigger}",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}
