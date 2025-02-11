@@ -14,7 +14,7 @@ public class CameraPositioning : MonoBehaviour
         Vector3 newPos = lensCamera.transform.position - mainCamera.transform.position;
         float distance = Vector3.Distance(lensCamera.transform.position, mainCamera.transform.position);
         distance /= 10;
-        lensCamera.fieldOfView = Mathf.Clamp(distance, 10, 180);
+        lensCamera.fieldOfView = Mathf.Clamp(distance, 20, 180);
 
         // Point lens camera in the same direction as the main camera
         Quaternion targetRotation = Quaternion.LookRotation(newPos.normalized);

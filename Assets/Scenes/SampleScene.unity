@@ -867,7 +867,7 @@ MonoBehaviour:
     Triggers
 
 
-    Apply/Deapply Double Rotation = Right Hand Primary Button
+    Activate/Deactivate Double Rotation = Right Hand Primary Button
 
 
     Quit
@@ -1046,7 +1046,7 @@ PrefabInstance:
     - target: {fileID: 2869796502407761211, guid: 849ef981216b0cd4186587a7c585fff1,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.374
+      value: 0.361
       objectReference: {fileID: 0}
     - target: {fileID: 2869796502407761211, guid: 849ef981216b0cd4186587a7c585fff1,
         type: 3}
